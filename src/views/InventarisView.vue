@@ -157,23 +157,25 @@
               </div>
             </div>
             <div class="movement-container">
-              <div 
-                v-for="(movement, index) in movementList" 
-                :key="index" 
-                class="movement-item"
-              >
-                <div class="movement-info">
-                  <span class="item-name">{{ movement.itemName }}</span>
-                  <span class="item-date">• {{ movement.date }}</span>
-                </div>
-                <span class="status-movement" :class="{'status-masuk': movement.status === 'masuk', 'status-keluar': movement.status === 'keluar'}">
-                  {{ movement.status }}
-                </span>
-                <div class="movement-actions">
-                  <button class="action-icon" @click="editMovement(index)">✏️</button>
-                  <button class="action-icon" @click="deleteMovement(index)">🗑️</button>
-                </div>
-              </div>
+             
+<div 
+  v-for="(movement, index) in movementList" 
+  :key="index" 
+  class="movement-item"
+>
+  <div class="movement-info">
+    <span class="item-name">{{ movement.itemName }}</span>
+    <span class="item-quantity" v-if="movement.quantity">• {{ movement.quantity }}</span>
+    <span class="item-date">• {{ movement.date }}</span>
+  </div>
+  <span class="status-movement" :class="{'status-masuk': movement.status === 'masuk', 'status-keluar': movement.status === 'keluar'}">
+    {{ movement.status }}
+  </span>
+  <div class="movement-actions">
+    <button class="action-icon" @click="editMovement(index)">✏️</button>
+    <button class="action-icon" @click="deleteMovement(index)">🗑️</button>
+  </div>
+</div>
             </div>
           </div>
         </section>
@@ -868,6 +870,11 @@ th {
     font-size: 0.8rem;
     gap: 15px;
   }
+  .item-quantity {
+  font-size: 14px;
+  color: #9ca3af;
+  font-weight: 500;
+}
   
   .search-notif-profile {
     justify-content: space-between;

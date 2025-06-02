@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <form @submit.prevent="handleSubmit" @reset="handleReset" class="form-card">
-      <h2 class="form-title">Tambah Keluar Masuk Inventaris</h2>
+      <h2 class="form-title">Edit Keluar Masuk Inventaris</h2>
       
       <div class="form-content">
         <div class="form-column single-column">
@@ -70,13 +70,14 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
-  name: 'FormTambahInventaris',
+  name: 'FormEditKeluarMasuk',
   setup() {
     const router = useRouter()
+    const route = useRoute()
 
     // Reactive form data
     const form = reactive({
@@ -86,40 +87,60 @@ export default {
       status: ''
     })
     
+    // Load existing data saat component mounted
+    onMounted(() => {
+      const movementId = route.params.id
+      const movementList = JSON.parse(localStorage.getItem('movementList') || '[]')
+      const movement = movementList[movementId]
+
+      if (movement) {
+        // Map data existing ke form
+        form.nama = movement.itemName || ''
+        form.jumlah = movement.quantity || movement.jumlah || '' // Check both possible field names
+        form.tanggal = movement.date || ''
+        form.status = movement.status || ''
+      } else {
+        alert('Data keluar masuk tidak ditemukan!')
+        router.push('/inventaris')
+      }
+    })
+    
     // Methods
     const handleSubmit = async () => {
       // Validasi form
-      if (!form.nama || !form.jumlah || !form.tanggal || !form.status) {
-        alert('Nama, jumlah, tanggal, dan status harus diisi!')
+      if (!form.nama || !form.tanggal || !form.status) {
+        alert('Nama, tanggal, dan status harus diisi!')
         return
       }
 
-      // Prepare data inventaris
-      const newInventaris = {
-        nama: form.nama,
-        jumlah: form.jumlah,
-        tanggal: form.tanggal,
-        status: form.status,
-        createdAt: new Date().toISOString()
-      }
-
-      // Simpan ke local storage untuk sementara
-      const existingInventaris = JSON.parse(localStorage.getItem('inventarisList') || '[]')
-      existingInventaris.push(newInventaris)
-      localStorage.setItem('inventarisList', JSON.stringify(existingInventaris))
+      // Update data keluar masuk
+      const movementId = route.params.id
+      const movementList = JSON.parse(localStorage.getItem('movementList') || '[]')
       
-      alert('Data inventaris berhasil ditambahkan!')
+      if (movementList[movementId]) {
+        // Update data existing dengan struktur konsisten
+        movementList[movementId] = {
+          itemName: form.nama,
+          quantity: form.jumlah, // Gunakan 'quantity' untuk konsistensi
+          date: form.tanggal,
+          status: form.status,
+          statusClass: form.status === 'masuk' ? 'status-masuk' : 'status-keluar'
+        }
+        
+        localStorage.setItem('movementList', JSON.stringify(movementList))
+        alert('Data keluar masuk berhasil diperbarui!')
+      } else {
+        alert('Data tidak ditemukan!')
+        router.push('/inventaris')
+        return
+      }
       
       // Redirect ke halaman inventaris
       router.push('/inventaris')
     }
     
     const handleReset = () => {
-      // Reset form data
-      Object.keys(form).forEach(key => {
-        form[key] = ''
-      })
-      // Navigate back to inventory page
+      // Reset form data dan kembali ke halaman inventaris
       router.push('/inventaris')
     }
     
@@ -191,11 +212,6 @@ export default {
   width: 100%;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
 .form-label {
   display: block;
   font-size: 12px;
@@ -221,6 +237,47 @@ export default {
 
 .form-input:focus {
   border-bottom-color: #9ca3af;
+}
+
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+.form-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #6b7280;
+  font-size: 12px;
+  color: white;
+  padding: 8px 0;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.form-select:focus {
+  border-bottom-color: #9ca3af;
+}
+
+.form-select option {
+  background-color: #121212;
+  color: white;
+}
+
+.form-select option:disabled {
+  color: rgba(117, 117, 117, 0.6);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 10px;
 }
 
 .form-actions {

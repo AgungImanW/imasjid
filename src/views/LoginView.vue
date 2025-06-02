@@ -166,11 +166,28 @@ export default {
 
 .login-form {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .input-container {
   margin-bottom: 16px;
   width: 100%;
+}
+
+.login-btn {
+  width: 60%;
+  background-color: #7B6F63;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
 }
 
 .input-group {
@@ -255,16 +272,16 @@ input[type="password"]::-ms-clear {
 }
 
 .login-btn {
-  width: 100%;
+  width: 80%;
   background-color: #7B6F63;
   color: white;
   border: none;
   border-radius: 50px;
-  padding: 12px;
-  font-size: 16px;
+  padding: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
+  margin: 10px auto 0;
   transition: background-color 0.3s;
 }
 

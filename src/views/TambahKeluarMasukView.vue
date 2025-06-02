@@ -74,7 +74,7 @@ import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
-  name: 'FormTambahInventaris',
+  name: 'FormTambahKeluarMasuk',
   setup() {
     const router = useRouter()
 
@@ -89,14 +89,15 @@ export default {
     // Methods
     const handleSubmit = async () => {
       // Validasi form
-      if (!form.nama || !form.jumlah || !form.tanggal || !form.status) {
-        alert('Nama, jumlah, tanggal, dan status harus diisi!')
+      if (!form.nama || !form.tanggal || !form.status) {
+        alert('Nama, tanggal, dan status harus diisi!')
         return
       }
 
-      // Prepare data keluar masuk
+      // Prepare data keluar masuk - struktur konsisten dengan yang ada di inventaris
       const newMovement = {
         itemName: form.nama,
+        quantity: form.jumlah, // Ganti dari 'jumlah' ke 'quantity' untuk konsistensi
         date: form.tanggal,
         status: form.status,
         statusClass: form.status === 'masuk' ? 'status-masuk' : 'status-keluar'
@@ -190,11 +191,6 @@ export default {
   width: 100%;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
 .form-label {
   display: block;
   font-size: 12px;
@@ -220,6 +216,47 @@ export default {
 
 .form-input:focus {
   border-bottom-color: #9ca3af;
+}
+
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+.form-select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #6b7280;
+  font-size: 12px;
+  color: white;
+  padding: 8px 0;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.form-select:focus {
+  border-bottom-color: #9ca3af;
+}
+
+.form-select option {
+  background-color: #121212;
+  color: white;
+}
+
+.form-select option:disabled {
+  color: rgba(117, 117, 117, 0.6);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280;
+  font-size: 10px;
 }
 
 .form-actions {
